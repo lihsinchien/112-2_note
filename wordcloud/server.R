@@ -24,14 +24,6 @@ shinyServer(function(input, output, session) {
     isolate({
       withProgress({
         setProgress(message = "Processing corpus...")
-        #        wc_file <- input$wc
-        #        if(!is.null(wc_file)){
-        #          wc_text <- readLines(wc_file$datapath)
-        #        }else{
-        #          wc_text <- "A word cloud is an impage made of words that together resemble a cloudy shape.
-        #          The Size of a word shows how important it is e.g. how often it applears in a text - its frequency.
-        #          People typically use word clouds to easily produce a summary of large documents (reports, speedch)"
-        #        }
         test <- input$wctext2
 
         #去掉數字、英文, 移除 NA 
@@ -55,19 +47,20 @@ shinyServer(function(input, output, session) {
   })
   wordcloud_rep <-repeatable(wordcloud)
   
-#  output$wcplot <- renderPlot({
-#    withProgress({
-#      setProgress(message="Creating Wordcloud...")
-#      wc_corpus<-wc_data()
-#      wordcloud(wc_corpus$char, wc_corpus$freq, min.freq = 1, random.order = F, ordered.colors = F, colors = rainbow(nrow(wc_corpus)))
-#    })
-#  })
   output$wordcloud2 <- renderWordcloud2({
     withProgress({
       setProgress(message="Creating Wordcloud...")
       wc_corpus<-wc_data()
-      wordcloud2(filter(wc_corpus, freq >= input$n.cut),minSize = 2, fontFamily = "Microsoft YaHei", size = 1)
+      wc_corpus.o<-wc_corpus[order(-wc_corpus$freq),]
+      wordcloud2(filter(wc_corpus.o, freq >= input$n.cut),#minSize = 2, 
+                 fontFamily = "Microsoft YaHei", size = 1, shape = "circle" ,
+                 color='random-light', backgroundColor="black")
     })
+  })
+  output$word_hist <- renderPlot({
+    wc_corpus<-wc_data()
+    wc_corpus.o<-wc_corpus[order(-wc_corpus$freq),]
+    barplot(wc_corpus.o$freq,names.arg=wc_corpus.o$char,main="",border=F,xlim=c(1,20))
   })
 }
 )
