@@ -1,4 +1,4 @@
-Tree-Based Methods_spam example
+Tree-Based Methods: spam example
 ================
 Li-Hsin Chien
 2024-03-10
@@ -56,11 +56,31 @@ spam_train <- spam[train_ind, ]
 spam_test <- spam[-train_ind, ]
 
 spam_train_pred=spam_train[,1:57] #train: covariates (x)
-spam_train_ind=spam_train[,58]             #train: outcome (y)
+spam_train_ind=spam_train[,58]    #train: outcome (y)
 
 spam_test_pred=spam_test[,1:57]   #test: covariates (x)
-spam_test_ind=spam_test[,58]               #test: outcome (y)
+spam_test_ind=spam_test[,58]      #test: outcome (y)
+
+addmargins(table(spam_train_ind)) #training set 樣本數
 ```
+
+    ## spam_train_ind
+    ## email  spam   Sum 
+    ##  1844  1192  3036
+
+在 training set 中總過共有 3036 樣本，其中 email 有 1844
+筆，垃圾郵件(spam) 有 1192 筆。
+
+``` r
+addmargins(table(spam_test_ind))  #testing set 樣本數
+```
+
+    ## spam_test_ind
+    ## email  spam   Sum 
+    ##   944   621  1565
+
+在 testing set 中總過共有 1565 樣本，其中 email 有 944
+筆，垃圾郵件(spam) 有 621 筆。
 
 # 2 決策樹分析 (Decision Tree: Classification Tree)
 
@@ -123,7 +143,20 @@ confusionMatrix(as.factor(spam_train_ind2),as.factor(getPred.train))
 rpart.plot(modelTree, extra = 106, nn = TRUE)
 ```
 
-![](tree_spam-example_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](tree_spam-example_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+使用變數有:
+
+- !: ! 符號在郵件中出現百分比
+- remove: remove 單字在郵件中出現百分比
+- \$: \$ 符號在郵件中出現百分比
+- george: george 單字在郵件中出現百分比
+- CAPAVE: 郵件中連續大寫字母長度平均
+- hp: hp 單字在郵件中出現百分比
+- free: free 單字在郵件中出現百分比
+- our: our 單字在郵件中出現百分比
+- edu: edu 單字在郵件中出現百分比
+- CAPTOT: 郵件中連續大寫字母總長度
 
 每個節點 (node) 內容的說明如下圖:
 
@@ -177,11 +210,11 @@ library(randomForest)
 ``` r
 modelForest=randomForest(as.factor(spam_train_ind)~.,data=data.frame(spam_train_pred),type='classification',importance=TRUE,
                          ntree=1000)
-plot(modelForest,main="Out-of-bag error rate")
+plot(modelForest,main="Out-of-bag (OOB) error rate")
 legend("topright",c("OOB-spam","OOB-all","OOB-email"),col=c(3,1,2),lty=1)
 ```
 
-![](tree_spam-example_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](tree_spam-example_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
 
 ``` r
 pforest=predict(modelForest,newdata=data.frame(spam_test_pred))
