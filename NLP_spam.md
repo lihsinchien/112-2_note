@@ -120,6 +120,15 @@ as.character(corpus[[3]])
 
     ## [1] "free entry wkly comp win fa cup final tkts st may text fa receive entry questionstd txt ratetcs apply overs"
 
+## 2.6 替換成詞幹 (Stem words)
+
+``` r
+corpus = tm_map(corpus, stemDocument)
+as.character(corpus[[3]])
+```
+
+    ## [1] "free entri wkli comp win fa cup final tkts st may text fa receiv entri questionstd txt ratetc appli over"
+
 # 3 製作文件矩陣 (term-document matrix)
 
 文件矩陣（term-document matrix）:
@@ -131,8 +140,8 @@ dtm = DocumentTermMatrix(corpus)
 dtm
 ```
 
-    ## <<DocumentTermMatrix (documents: 5574, terms: 8305)>>
-    ## Non-/sparse entries: 44222/46247848
+    ## <<DocumentTermMatrix (documents: 5574, terms: 6956)>>
+    ## Non-/sparse entries: 43745/38728999
     ## Sparsity           : 100%
     ## Maximal term length: 40
     ## Weighting          : term frequency (tf)
@@ -147,7 +156,7 @@ dtm = removeSparseTerms(dtm, 0.999)
 dim(dtm)
 ```
 
-    ## [1] 5574 1287
+    ## [1] 5574 1208
 
 單詞量減少至 1287 個。
 
@@ -158,22 +167,22 @@ mat<-as.matrix(dtm)
 dim(mat)
 ```
 
-    ## [1] 5574 1287
+    ## [1] 5574 1208
 
 ``` r
 mat[3,mat[3,]>0]
 ```
 
-    ##   apply    comp     cup   entry   final    free     may receive    text     txt 
-    ##       1       1       1       2       1       1       1       1       1       1 
-    ##     win    wkly 
-    ##       1       1
+    ##  appli   comp    cup  entri  final   free    may receiv   text    txt    win 
+    ##      1      1      1      2      1      1      1      1      1      1      1 
+    ##   wkli 
+    ##      1
 
 ``` r
 as.character(corpus[[3]])
 ```
 
-    ## [1] "free entry wkly comp win fa cup final tkts st may text fa receive entry questionstd txt ratetcs apply overs"
+    ## [1] "free entri wkli comp win fa cup final tkts st may text fa receiv entri questionstd txt ratetc appli over"
 
 # 4 用文字雲比較 spam/ham 的字頻
 
@@ -184,10 +193,10 @@ mat2<-apply(mat,2,function(x) ifelse(x>0,1,0))
 mat2[3,mat2[3,]>0]
 ```
 
-    ##   apply    comp     cup   entry   final    free     may receive    text     txt 
-    ##       1       1       1       1       1       1       1       1       1       1 
-    ##     win    wkly 
-    ##       1       1
+    ##  appli   comp    cup  entri  final   free    may receiv   text    txt    win 
+    ##      1      1      1      1      1      1      1      1      1      1      1 
+    ##   wkli 
+    ##      1
 
 ``` r
 mat_spam<-mat2[y=="spam",]
@@ -199,15 +208,15 @@ freq.ham<-round(freq.ham.tmp*sum(freq.spam)/sum(freq.ham.tmp),digits=0)
 head(freq.spam)
 ```
 
-    ##   call    now   free    txt mobile  claim 
-    ##    322    181    169    142    110    108
+    ##  call   now  free   txt  text mobil 
+    ##   328   181   169   142   122   118
 
 ``` r
 head(freq.ham)
 ```
 
-    ##  can will  get just  now dont 
-    ##  101   91   84   83   83   70
+    ##  can  get will just  now come 
+    ##   99   98   91   81   81   80
 
 ``` r
 wf.spam<- data.frame(word=names(freq.spam), freq=freq.spam)
@@ -223,35 +232,35 @@ wordcloud2(wf.spam[1:200,],
            minSize = 0, size = .8)
 ```
 
-![](NLP_spam_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+![](NLP_spam_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
 
 ``` r
 wordcloud2(wf.ham[1:200,], 
            minSize = 0, size = .5)
 ```
 
-![](NLP_spam_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+![](NLP_spam_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 barplot(wf.spam[1:200,2],ylim=c(0,350),main="spam")
 ```
 
-![](NLP_spam_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
+![](NLP_spam_files/figure-gfm/unnamed-chunk-20-1.png)<!-- -->
 
 ``` r
 barplot(wf.ham[1:200,2],ylim=c(0,350),main="ham")
 ```
 
-![](NLP_spam_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
+![](NLP_spam_files/figure-gfm/unnamed-chunk-20-2.png)<!-- -->
 
 ``` r
 head(data.frame(wf.spam,wf.ham))
 ```
 
-    ##          word freq word.1 freq.1
-    ## call     call  322    can    101
-    ## now       now  181   will     91
-    ## free     free  169    get     84
-    ## txt       txt  142   just     83
-    ## mobile mobile  110    now     83
-    ## claim   claim  108   dont     70
+    ##        word freq word.1 freq.1
+    ## call   call  328    can     99
+    ## now     now  181    get     98
+    ## free   free  169   will     91
+    ## txt     txt  142   just     81
+    ## text   text  122    now     81
+    ## mobil mobil  118   come     80
