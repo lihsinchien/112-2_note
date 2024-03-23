@@ -146,7 +146,7 @@ dtm
     ## Maximal term length: 40
     ## Weighting          : term frequency (tf)
 
-語音庫(corpus)中共有 5574 個簡訊 (document,row)，總共有 8305 個單詞
+語音庫(corpus)中共有 5574 個簡訊 (document,row)，總共有 6956 個單詞
 (term, column)。
 
 接下來去掉出現頻率低的單詞:
@@ -158,7 +158,7 @@ dim(dtm)
 
     ## [1] 5574 1208
 
-單詞量減少至 1287 個。
+單詞量減少至 1208 個。
 
 將 term-document matrix 轉為矩陣格式:
 
