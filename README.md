@@ -1,7 +1,9 @@
 ## 科學統計相關檔案
 1. 決策樹與隨機森林
 
-   1.1 垃圾郵件 (spam) 範例: tree_spam-example.md
+   1.1 課堂投影片相關 R 程式碼: tree_ppt.md
+   
+   1.2 垃圾郵件 (spam) 範例: tree_spam-example.md
    
 3. NLP與文字雲
    
